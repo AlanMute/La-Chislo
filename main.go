@@ -1,9 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 var chesl map[string]int = map[string]int{
@@ -33,16 +35,27 @@ var chesl map[string]int = map[string]int{
 }
 
 func main() {
-	inp := "quatre vingt seize"
-	words := strings.Fields(inp)
-	ans := 0
+	router := gin.Default()
 
-	p := check(words[0])
-	n := len(words)
-	if p != 0 {
-		ans += betw(p, n) + dix(p, words, n) + des(p, words, n) + four(p, words, n) + cent(p, words, n) + edin(p, words, n)
-	}
-	fmt.Print(ans)
+	router.Static("/static", "./static")
+
+	router.GET("/convert", func(c *gin.Context) {
+		inp := c.Query("number")
+
+		words := strings.Fields(inp)
+		ans := 0
+
+		p := check(words[0])
+		n := len(words)
+		if p != 0 {
+			ans += betw(p, n) + dix(p, words, n) + des(p, words, n) + four(p, words, n) + cent(p, words, n) + edin(p, words, n)
+		}
+
+		c.JSON(http.StatusOK, gin.H{"result": ans})
+	})
+
+	router.Run(":8080")
+
 }
 
 func check(w string) int {
@@ -184,7 +197,9 @@ func cent(p int, words []string, n int) int {
 
 		p = check(words[1])
 		n--
-
+		if p == 100 {
+			log.Fatal("После сотней не могут идти сотни")
+		}
 		if p > 0 && p < 10 && p != 4 {
 			if n != 0 {
 				log.Fatal("После единиц не могут идти числа!")
@@ -212,7 +227,8 @@ func edin(p int, words []string, n int) int {
 			log.Fatal("После единиц могут быть только сотни!")
 		}
 		n = len(words) - 1
-		ans += cent(p, words[1:], n)
+		ans = 100 * ans
+		ans += cent(p, words[1:], n) - 100
 		return ans
 	}
 	return 0

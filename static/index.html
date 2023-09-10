@@ -19,6 +19,17 @@
             <p id="result"></p>
         </div>
     </div>
+    <script>
+        function convertToNumber() {
+            var input = document.getElementById("numberInput").value;
+            fetch("/convert?number=" + input)
+                .then(response => response.json())
+                .then(data => {
+                    var resultElement = document.getElementById("result");
+                    resultElement.innerHTML = data.result;
+                });
+        }
+    </script>
     
 </body>
 </html>
