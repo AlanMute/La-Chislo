@@ -10,23 +10,18 @@
 
 1. Клонируйте репозиторий на свой компьютер:
 
-\'''shell
-git clone https://github.com/KrizzMU/La-Chislo/
-\'''
+`git clone https://github.com/KrizzMU/La-Chislo/`
 
 2. Перейдите в каталог проекта:
 
-\'''shell
-cd La-Chislo
-\'''
+`cd La-Chislo`
+
 
 3. Убедитесь, что у вас установлен Go на вашем компьютере: [Ссылка на Go](https://golang.org/dl/)
 
 4. Запустите сервер с помощью команды `go run`:
 
-\'''shell
-go run main.go
-\'''
+`go run main.go`
 
 5. Откройте веб-браузер и перейдите по адресу [http://localhost:8080/](http://localhost:8080/) (или другому порту, если вы указали другой порт при запуске). Теперь ваш сайт доступен локально.
 
