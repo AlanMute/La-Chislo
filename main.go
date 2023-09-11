@@ -45,10 +45,50 @@ func main() {
 		words := strings.Fields(inp)
 		ans := 0
 
-		p := check(words[0])
+		p, er := check(words[0])
+		if p == -1 {
+			c.JSON(http.StatusOK, gin.H{"result": er})
+			return
+		}
 		n := len(words)
 		if p != 0 {
-			ans += betw(p, n) + dix(p, words, n) + des(p, words, n) + four(p, words, n) + cent(p, words, n) + edin(p, words, n)
+			h, er := betw(p, n)
+			if h == -1 {
+				//fmt.Println("1")
+				c.JSON(http.StatusOK, gin.H{"result": er})
+				return
+			}
+			ans += h
+			h, er = dix(p, words, n)
+			if h == -1 {
+				c.JSON(http.StatusOK, gin.H{"result": er})
+				return
+			}
+			ans += h
+			h, er = des(p, words, n)
+			if h == -1 {
+				c.JSON(http.StatusOK, gin.H{"result": er})
+				return
+			}
+			ans += h
+			h, er = four(p, words, n)
+			if h == -1 {
+				c.JSON(http.StatusOK, gin.H{"result": er})
+				return
+			}
+			ans += h
+			h, er = cent(p, words, n)
+			if h == -1 {
+				c.JSON(http.StatusOK, gin.H{"result": er})
+				return
+			}
+			ans += h
+			h, er = edin(p, words, n)
+			if h == -1 {
+				c.JSON(http.StatusOK, gin.H{"result": er})
+				return
+			}
+			ans += h
 		}
 
 		c.JSON(http.StatusOK, gin.H{"result": ans})
@@ -58,178 +98,248 @@ func main() {
 
 }
 
-func check(w string) int {
+func check(w string) (int, string) {
 	p, ok := chesl[w]
 
 	if !ok {
-		log.Fatal("Ошибка в синтаксисе!")
+		return -1, "Ошибка в синтаксисе!"
 	}
 
-	return p
+	return p, ""
 }
 
-func betw(p int, n int) int {
+func betw(p int, n int) (int, string) {
 	if p > 10 && p < 17 {
 		n--
 		if n == 0 {
 			ans := p
-			return ans
+			return ans, ""
 		} else {
 			log.Fatal("После числа от 11 до 16 не может идти что-то еще!")
 		}
 	}
-	return 0
+	return 0, ""
 }
 
-func dix(p int, words []string, n int) int {
+func dix(p int, words []string, n int) (int, string) {
 	if p == 10 {
 		n--
 		ans := p
 
 		if n == 0 {
-			return ans
+			return ans, ""
 		}
 
-		p = check(words[1])
+		p, er := check(words[1])
+		if p == -1 {
+			return -1, er
+		}
 		n--
 
 		if p > 6 && p < 10 {
 			ans += p
 			if n != 0 {
-				log.Fatal("После единиц не могут идти числа!")
+				return -1, "После единиц не могут идти числа!"
 			}
 		} else {
-			log.Fatal("После десятки следует только число от 7 до 9!")
+			return -1, "После десятки следует только число от 7 до 9!"
 		}
-		return ans
+		return ans, ""
 	}
-	return 0
+	return 0, ""
 }
 
-func des(p int, words []string, n int) int {
+func des(p int, words []string, n int) (int, string) {
 	if p >= 20 && p <= 50 {
 		n--
 		ans := p
 		if n == 0 {
-			return ans
+			return ans, ""
 		}
 
-		p = check(words[1])
+		p, er := check(words[1])
+		if p == -1 {
+			return -1, er
+		}
+
 		n--
 		if p > 0 && p < 10 {
 			ans += p
 			if n != 0 {
-				log.Fatal("После единиц не могут идти числа!")
+				return -1, "После единиц не могут идти числа!"
 			}
 		} else {
-			log.Fatal("После десяток идут только единицы!")
+			return -1, "После десяток идут только единицы!"
 		}
-		return ans
+		return ans, ""
 	}
 	if p == 60 {
 		n--
 		ans := p
 		if n == 0 {
-			return ans
+			return ans, ""
 		}
 
-		p = check(words[1])
+		p, er := check(words[1])
+		if p == -1 {
+			return -1, er
+		}
+
 		n--
 
 		if p > 0 && p < 10 {
 			if n != 0 {
-				log.Fatal("После единиц не могут идти числа!")
+
+				return -1, "После единиц не могут идти числа!"
 			}
 			ans += p
 		} else {
 			n = len(words) - 1
-			ans += dix(p, words[1:], n) + betw(p, n)
+			a, er := dix(p, words[1:], n)
+			if a == -1 {
+				return -1, er
+			}
+			ans += a
+			a, er = betw(p, n)
+			if a == -1 {
+				return -1, er
+			}
+			ans += a
 		}
-		return ans
+		return ans, ""
 	}
 
-	return 0
+	return 0, ""
 }
 
-func four(p int, words []string, n int) int {
+func four(p int, words []string, n int) (int, string) {
 	if p == 4 {
 		n--
 		ans := p
 		if n == 0 {
-			return ans
+			return ans, ""
 		}
 
-		p = check(words[1])
+		p, er := check(words[1])
+		if p == -1 {
+			return -1, er
+		}
 		n--
 		if p == 20 {
 			ans += 80 - 4
 			if n == 0 {
-				return ans
+				return ans, ""
 			}
 
-			p = check(words[2])
+			p, er := check(words[2])
+			if p == -1 {
+				return -1, er
+			}
 			n--
 
 			if p > 0 && p < 10 {
 				if n != 0 {
-					log.Fatal("После единиц не могут идти числа!")
+					return -1, "После единиц не могут идти числа!"
 				}
 				ans += p
 			} else {
 				n = len(words) - 2
-				ans += dix(p, words[2:], n) + betw(p, n)
+				a, er := dix(p, words[2:], n)
+				if a == -1 {
+					return -1, er
+				}
+				ans += a
+				a, er = betw(p, n)
+				if a == -1 {
+					return -1, er
+				}
+				ans += a
 			}
 		}
-		return ans
+		return ans, ""
 
 	}
-	return 0
+	return 0, ""
 }
 
-func cent(p int, words []string, n int) int {
+func cent(p int, words []string, n int) (int, string) {
 	if p == 100 {
 		ans := 100
 		n--
 
 		if n == 0 {
-			return ans
+			return ans, ""
 		}
 
-		p = check(words[1])
+		p, er := check(words[1])
+		if p == -1 {
+			return -1, er
+		}
 		n--
 		if p == 100 {
-			log.Fatal("После сотней не могут идти сотни")
+			return -1, "После сотней не могут идти сотни"
 		}
 		if p > 0 && p < 10 && p != 4 {
 			if n != 0 {
-				log.Fatal("После единиц не могут идти числа!")
+				return -1, "После единиц не могут идти числа!"
 			}
 			ans += p
 		} else {
 			n = len(words) - 1
-			ans += des(p, words[1:], n) + dix(p, words[1:], n) + betw(p, n) + four(p, words[1:], n)
+			a, er := des(p, words[1:], n)
+			if a == -1 {
+				return -1, er
+			}
+			ans += a
+
+			a, er = dix(p, words[1:], n)
+			if a == -1 {
+				return -1, er
+			}
+			ans += a
+
+			a, er = betw(p, n)
+			if a == -1 {
+				return -1, er
+			}
+			ans += a
+
+			a, er = four(p, words[1:], n)
+			if a == -1 {
+				return -1, er
+			}
+			ans += a
 		}
-		return ans
+		return ans, ""
 	}
-	return 0
+	return 0, ""
 }
 
-func edin(p int, words []string, n int) int {
+func edin(p int, words []string, n int) (int, string) {
 	if p > 0 && p < 10 && p != 4 {
 		n--
 		ans := p
 		if n == 0 {
-			return ans
+			return ans, ""
 		}
-		p = check(words[1])
+		p, er := check(words[1])
+		if p == -1 {
+			return -1, er
+		}
 		n--
 		if p != 100 {
-			log.Fatal("После единиц могут быть только сотни!")
+			return -1, "После единиц могут быть только сотни!"
 		}
 		n = len(words) - 1
 		ans = 100 * ans
-		ans += cent(p, words[1:], n) - 100
-		return ans
+
+		a, er := cent(p, words[1:], n)
+		if a == -1 {
+			return -1, er
+		}
+		ans += a - 100
+
+		return ans, ""
 	}
-	return 0
+	return 0, ""
 }
