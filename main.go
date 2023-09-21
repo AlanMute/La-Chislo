@@ -51,6 +51,10 @@ func main() {
 			return
 		}
 		n := len(words)
+		if p == 0 && n != 1 {
+			c.JSON(http.StatusOK, gin.H{"result": "Ноль не может быть с другими числами!"})
+			return
+		}
 		if p != 0 {
 			h, er := betw(p, n)
 			if h == -1 {
@@ -102,7 +106,7 @@ func check(w string) (int, string) {
 	p, ok := chesl[w]
 
 	if !ok {
-		return -1, "Ошибка в синтаксисе!"
+		return -1, "Ошибка в слове " + w
 	}
 
 	return p, ""
@@ -139,7 +143,23 @@ func dix(p int, words []string, n int) (int, string) {
 		if p > 6 && p < 10 {
 			ans += p
 			if n != 0 {
-				return -1, "После единиц не могут идти числа!"
+				p, er := check(words[2])
+				if p == -1 {
+					return -1, er
+				}
+				if p > 0 && p < 10 {
+					return -1, "После единиц не могут идти единицы!"
+				}
+				if p >= 10 && p < 100 {
+					return -1, "После единиц не могут идти десятки"
+				}
+				if p >= 100 {
+					return -1, "После единиц не могут идти сотни"
+				}
+				if p == 0 {
+					return -1, "После единиц не могут идти нули!"
+				}
+
 			}
 		} else {
 			return -1, "После десятки следует только число от 7 до 9!"
@@ -166,10 +186,33 @@ func des(p int, words []string, n int) (int, string) {
 		if p > 0 && p < 10 {
 			ans += p
 			if n != 0 {
-				return -1, "После единиц не могут идти числа!"
+				p, er := check(words[2])
+				if p == -1 {
+					return -1, er
+				}
+				if p > 0 && p < 10 {
+					return -1, "После единиц не могут идти единицы!"
+				}
+				if p >= 10 && p < 100 {
+					return -1, "После единиц не могут идти десятки"
+				}
+				if p >= 100 {
+					return -1, "После единиц не могут идти сотни"
+				}
+				if p == 0 {
+					return -1, "После единиц не могут идти нули!"
+				}
 			}
 		} else {
-			return -1, "После десяток идут только единицы!"
+			if p >= 10 && p < 100 {
+				return -1, "После десяток не могут идти десятки"
+			}
+			if p >= 100 {
+				return -1, "После десяток не могут идти сотни"
+			}
+			if p == 0 {
+				return -1, "После десяток не могут идти нули!"
+			}
 		}
 		return ans, ""
 	}
@@ -189,8 +232,22 @@ func des(p int, words []string, n int) (int, string) {
 
 		if p > 0 && p < 10 {
 			if n != 0 {
-
-				return -1, "После единиц не могут идти числа!"
+				p, er := check(words[2])
+				if p == -1 {
+					return -1, er
+				}
+				if p > 0 && p < 10 {
+					return -1, "После единиц не могут идти единицы!"
+				}
+				if p >= 10 && p < 100 {
+					return -1, "После единиц не могут идти десятки"
+				}
+				if p >= 100 {
+					return -1, "После единиц не могут идти сотни"
+				}
+				if p == 0 {
+					return -1, "После единиц не могут идти нули!"
+				}
 			}
 			ans += p
 		} else {
@@ -239,7 +296,22 @@ func four(p int, words []string, n int) (int, string) {
 
 			if p > 0 && p < 10 {
 				if n != 0 {
-					return -1, "После единиц не могут идти числа!"
+					p, er := check(words[3])
+					if p == -1 {
+						return -1, er
+					}
+					if p > 0 && p < 10 {
+						return -1, "После единиц не могут идти единицы!"
+					}
+					if p >= 10 && p < 100 {
+						return -1, "После единиц не могут идти десятки"
+					}
+					if p >= 100 {
+						return -1, "После единиц не могут идти сотни"
+					}
+					if p == 0 {
+						return -1, "После единиц не могут идти нули!"
+					}
 				}
 				ans += p
 			} else {
@@ -281,7 +353,22 @@ func cent(p int, words []string, n int) (int, string) {
 		}
 		if p > 0 && p < 10 && p != 4 {
 			if n != 0 {
-				return -1, "После единиц не могут идти числа!"
+				p, er := check(words[2])
+				if p == -1 {
+					return -1, er
+				}
+				if p > 0 && p < 10 {
+					return -1, "После единиц не могут идти единицы!"
+				}
+				if p >= 10 && p < 100 {
+					return -1, "После единиц не могут идти десятки"
+				}
+				if p >= 100 {
+					return -1, "После единиц не могут идти сотни"
+				}
+				if p == 0 {
+					return -1, "После единиц не могут идти нули!"
+				}
 			}
 			ans += p
 		} else {
@@ -328,7 +415,7 @@ func edin(p int, words []string, n int) (int, string) {
 		}
 		n--
 		if p != 100 {
-			return -1, "После единиц могут быть только сотни!"
+			return -1, "После первой единицы могут быть только сотни!"
 		}
 		n = len(words) - 1
 		ans = 100 * ans
