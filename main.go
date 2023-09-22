@@ -283,7 +283,7 @@ func des(p int, words []string, n int) (int, string) {
 				return -1, er
 			}
 			ans += a
-			a, er = betw(p, n, words)
+			a, er = betw(p, n, words[1:])
 			if a == -1 {
 				return -1, er
 			}
@@ -347,7 +347,7 @@ func four(p int, words []string, n int) (int, string) {
 					return -1, er
 				}
 				ans += a
-				a, er = betw(p, n, words)
+				a, er = betw(p, n, words[2:])
 				if a == -1 {
 					return -1, er
 				}
@@ -411,7 +411,7 @@ func cent(p int, words []string, n int) (int, string) {
 			}
 			ans += a
 
-			a, er = betw(p, n, words)
+			a, er = betw(p, n, words[1:])
 			if a == -1 {
 				return -1, er
 			}
