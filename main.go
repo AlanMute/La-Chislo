@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -56,7 +55,7 @@ func main() {
 			return
 		}
 		if p != 0 {
-			h, er := betw(p, n)
+			h, er := betw(p, n, words)
 			if h == -1 {
 				//fmt.Println("1")
 				c.JSON(http.StatusOK, gin.H{"result": er})
@@ -112,14 +111,30 @@ func check(w string) (int, string) {
 	return p, ""
 }
 
-func betw(p int, n int) (int, string) {
+func betw(p int, n int, words []string) (int, string) {
 	if p > 10 && p < 17 {
 		n--
 		if n == 0 {
 			ans := p
 			return ans, ""
 		} else {
-			log.Fatal("После числа от 11 до 16 не может идти что-то еще!")
+			p, er := check(words[1])
+			if p == -1 {
+				return -1, er
+			}
+			if p > 0 && p < 10 {
+				return -1, "После чисел 11-16 не могут идти единицы!"
+			}
+			if p >= 10 && p < 100 {
+				return -1, "После чисел 11-16 не могут идти десятки"
+			}
+			if p >= 100 {
+				return -1, "После чисел 11-16 не могут идти сотни"
+			}
+			if p == 0 {
+				return -1, "После чисел 11-16 не могут идти нули!"
+			}
+			//log.Fatal("После числа от 11 до 16 не может идти что-то еще!")
 		}
 	}
 	return 0, ""
@@ -162,6 +177,9 @@ func dix(p int, words []string, n int) (int, string) {
 
 			}
 		} else {
+			if p > 0 && p < 7 {
+				return -1, "После десяток не могут идти числа от 1 до 6"
+			}
 			if p >= 10 && p < 100 {
 				return -1, "После десяток не могут идти десятки"
 			}
@@ -265,7 +283,7 @@ func des(p int, words []string, n int) (int, string) {
 				return -1, er
 			}
 			ans += a
-			a, er = betw(p, n)
+			a, er = betw(p, n, words)
 			if a == -1 {
 				return -1, er
 			}
@@ -329,7 +347,7 @@ func four(p int, words []string, n int) (int, string) {
 					return -1, er
 				}
 				ans += a
-				a, er = betw(p, n)
+				a, er = betw(p, n, words)
 				if a == -1 {
 					return -1, er
 				}
@@ -393,7 +411,7 @@ func cent(p int, words []string, n int) (int, string) {
 			}
 			ans += a
 
-			a, er = betw(p, n)
+			a, er = betw(p, n, words)
 			if a == -1 {
 				return -1, er
 			}
